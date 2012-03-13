@@ -4,7 +4,7 @@
 		'num_pulses' : 7,
 		'default_width' : 0.8,
 		'default_ampl' : 1.0,
-		'repeats' : -1,
+		'repeats' : 5,
 		'repeat_interval' : 50000,
 		'pulses' : [
 			{ 'ts' : 0000 },
