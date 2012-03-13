@@ -1,0 +1,19 @@
+{
+	'pulse_pattern' : {
+		'duration' : 10000,
+		'num_pulses' : 7,
+		'default_width' : 1.0,
+		'default_ampl' : 0.7,
+		'repeats' : 0,
+		'pulses' : [
+			{ 'ts' : 0000 },
+			{ 'ts' : 1000 },
+			{ 'ts' : 2000 },
+			{ 'ts' : 3000 },
+			{ 'ts' : 4000 },
+			{ 'ts' : 5000 },
+			{ 'ts' : 6000 },
+		]
+	},
+}
+

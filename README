@@ -1,0 +1,98 @@
+USRP Radar Relay
+================
+
+About
+-----
+This is a framework that provides real-time continuous streaming of signal 
+waveforms through SDR (Software Defined Radio) devices.
+
+We at Neratec Solutions AG developed it as an utility to test DFS radar 
+detection at physical layer. We are testing with Ettus Research USRP N200 [1] 
+equipped with the XCVR2450 transceiver board [2].
+
+Beside its initial designation for DFS testing, with the provided interface it 
+is generic enough to utilize the SDR for the output of arbitrary patterns and 
+is therefore usable for a broader application radius.
+
+Background
+----------
+Typically SDR devices are used with GNURadio [3] that abstracts the underlying 
+hardware with a high-layer interface to access devices over a generalized set 
+of functions. With various applications provided (including fully GUI based 
+signal generation), it enables quick start using the SDR.
+
+While the tools greatly help to get first hands-on results, they become 
+inflexible as soon as the provided functionality set does not suffice the 
+target application.
+
+For applications that need continuous real-time streaming of signal data (like 
+for DFS testing) the UHD (USRP Hardware Driver) [4] provides an Ettus device 
+specific low-level interface. At this layer, the application feeds the device 
+with waveform samples over Ethernet to be radiated.
+
+Working at the UHD layer gives full control over timings and at the same time 
+demands for carefully designed processing schemes that ensure isochronous data 
+flows.
+
+The framework at hand implements a server component that takes care on those 
+requirements and provides a JSON-RPC interface to clients to configure the SDR 
+and set radar patterns to be radiated.
+
+Functional Description
+----------------------
+Upon successful building, server and client applications are provided.
+
+The 'radar_server' component creates a virtual instance of the USRP device 
+with an initial configuration and then waits for RPC commands to be executed.
+
+The 'radar_client' component reads a JSON-RPC formatted file and after 
+verification sends it to the server for execution.
+
+For the command format please have a look in the RPC-commands folder.
+
+Building
+--------
+The framework has been used so far with Linux systems. It depends on the UHD 
+libraries being installed, as described in [5]. You most probably have this 
+prerequisite met if you are using the USRP with GNURadio. As second requirement 
+the CMake build-system must be installed. Again, if you built UHD and/or 
+GNURadio from sources, you have that already installed. CMake will check for 
+UHD and refuse to build on errors.
+
+Build steps:
+1) create <my_build_dir> and cd to it
+2) in <my_build_dir> run: cmake <path_to_source>
+3) on success, in <my_build_dir> run: make
+4) on success, you should find radar_server and radar_client in <my_build_dir>
+
+Using
+-----
+1) Start the server component from a shell window and check for errors.
+2) In an other shell, run the client component with a valid JSON-RPC file as 
+   command line parameter, e.g.:
+   ./radar_client <path_to_source>/RCP-commands/pattern_single_ETSI_type1.txt
+
+Per default, the tools are built with debug output enabled and the server will 
+display how it interprets the received command. With the above command the USRP 
+will fire a one-time burst of 7 pulses with 1ms interval time and a width
+of 1usec.
+
+External Dependencies
+---------------------
+Following external dependencies are used and included in the 
+external_projects folder:
+ * json-c v0.9, Copyright (c) 2004, 2005 Metaparadigm Pte Ltd
+
+Contact
+-------
+Please report bugs to <zefir.kurtisi@neratec.com>.
+
+
+References
+----------
+[1] https://www.ettus.com/product/details/UN200-KIT
+[2] https://www.ettus.com/product/details/XCVR2450
+[3] http://gnuradio.org/redmine/projects/gnuradio/wiki
+[4] http://code.ettus.com/redmine/ettus/projects/uhd/wiki
+[5] http://files.ettus.com/uhd_docs/manual/html/build.html
+

@@ -1,0 +1,14 @@
+{
+	'pulse_pattern' : {
+		'duration' : 100,
+		'num_pulses' : 1,
+		'default_width' : 0.8,
+		'default_ampl' : 1.0,
+		'repeats' : -1,
+		'repeat_interval' : 100,
+		'pulses' : [
+			{ 'ts' : 0 },
+		]
+	},
+}
+

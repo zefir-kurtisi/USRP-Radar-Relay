@@ -1,0 +1,8 @@
+{
+	'device_config' : {
+		'freq' : 5505,
+		'rate' : 20,
+		'gain' : 15,
+	},
+}
+
