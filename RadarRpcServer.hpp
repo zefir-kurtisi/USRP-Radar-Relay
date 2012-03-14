@@ -21,7 +21,7 @@ private:
 	void finalize_server(void);
 
 	bool send_data(std::string& data);
-	int sock_getcmd(void);
+	bool sock_getcmd(void);
 
 	std::string transmit_buffer;
 	int sock_listen;

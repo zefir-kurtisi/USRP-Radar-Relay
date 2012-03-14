@@ -30,7 +30,6 @@ RadarJsonRpc::RadarJsonRpc()
 RadarJsonRpc::~RadarJsonRpc(void)
 {
 	delete(pulse_pattern.pulses);
-//	delete(request_buffer);
 }
 
 bool RadarJsonRpc::parse_pattern_request(struct json_object *j_root)
@@ -54,7 +53,8 @@ bool RadarJsonRpc::parse_pattern_request(struct json_object *j_root)
 	j_default_width = json_object_object_get(j_pattern, "default_width");
 	j_default_ampl = json_object_object_get(j_pattern, "default_ampl");
 	j_repeats = json_object_object_get(j_pattern, "repeats");
-	j_repeat_interval = json_object_object_get(j_pattern, "repeat_interval");
+	j_repeat_interval = json_object_object_get(j_pattern,
+						   "repeat_interval");
 
 	pattern.duration = json_object_get_int(j_duration);
 	pattern.num_pulses = json_object_get_int(j_num_pulses);
@@ -173,13 +173,13 @@ bool RadarJsonRpc::get_result(std::string& request)
 	bool result = false;
 	struct json_object *j_root;
 	j_root = json_tokener_parse(request.c_str());
-	if(is_error(j_root)) {
+	if (is_error(j_root)) {
 		log_json_warning(j_root);
 		return false;
 	}
 	struct json_object *j_result;
 	j_result = json_object_object_get(j_root, RESULT_RESPONSE);
-	if(is_error(j_result)) {
+	if (is_error(j_result)) {
 		log_json_warning(j_result);
 		json_object_put(j_root);
 		return false;
@@ -196,7 +196,7 @@ struct json_cmd *RadarJsonRpc::parse_request(struct json_object *j_root)
 	struct json_cmd *retval = NULL;
 	char *cmd;
 
-	if(is_error(j_root)) {
+	if (is_error(j_root)) {
 		log_json_warning(j_root);
 		return NULL;
 	}
@@ -205,7 +205,7 @@ struct json_cmd *RadarJsonRpc::parse_request(struct json_object *j_root)
 		DERR << "get_request(): Invalid format" << std::endl;
 		goto done;
 	}
-	cmd = (char*)lh_root->head->k;
+	cmd = (char*) lh_root->head->k;
 	if (cmd == NULL) {
 		DERR << "get_request(): Invalid format" << std::endl;
 		goto done;
@@ -224,6 +224,7 @@ struct json_cmd *RadarJsonRpc::parse_request(struct json_object *j_root)
 	} else {
 		DWARN << "Unknown command: " << cmd << std::endl;
 	}
+
 done:
 	json_object_put(j_root);
 	return retval;

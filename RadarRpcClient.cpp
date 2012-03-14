@@ -33,8 +33,8 @@ RadarRpcClient::RadarRpcClient(std::string ip, ushort port)
 	server_ip = ip;
 	server_port = port;
 	rpc_socket = -1;
-	DLOG << "RadarRpcClient " << server_ip << ":"
-			<< server_port << std::endl;
+	DLOG	<< "RadarRpcClient " << server_ip << ":"
+		<< server_port << std::endl;
 }
 
 RadarRpcClient::~RadarRpcClient()
@@ -50,7 +50,7 @@ bool RadarRpcClient::connect_server(void)
 
 	// Create socket
 	rpc_socket = socket(AF_INET, SOCK_STREAM, 0);
-	if(rpc_socket < 0) {
+	if (rpc_socket < 0) {
 		last_error = "Error creating socket: ";
 		last_error += strerror(errno);
 		return false;
@@ -61,7 +61,7 @@ bool RadarRpcClient::connect_server(void)
 	addr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 
 	res = connect(rpc_socket, (struct sockaddr *) &addr, sizeof(addr));
-	if(res < 0) {
+	if (res < 0) {
 		close(rpc_socket);
 		last_error = "Error connecting: ";
 		last_error += strerror(errno);
@@ -77,7 +77,7 @@ bool RadarRpcClient::send_request(std::string& request)
 	const char *buff = request.data();
 	while (sent < size) {
 		int wrote = write(rpc_socket, buff + sent, size - sent);
-		if(wrote < 0) {
+		if (wrote < 0) {
 			last_error = "Failed to write data to socket";
 			return false;
 		}
@@ -96,7 +96,7 @@ bool RadarRpcClient::get_response(void)
 	do {
 		int received = recv(rpc_socket, response + rx_bytes,
 				MAX_RESPONSE_SIZE - rx_bytes, 0);
-		if(received < 0)
+		if (received < 0)
 			return false;
 		rx_bytes += received;
 	} while (response[rx_bytes - 1] != 0);

@@ -31,8 +31,8 @@ bool UsrpRadarRelayContinuous::setup_tx(double freq, double rate, double gain)
 		return false;
 	// 1ms silence
 	lo_tx_samples = (size_t)(operating_rate * 1e3);
-	DLOG << "Setting up lo_buffer with " << lo_tx_samples << " samples";
-	DLOG << "(or=" << operating_rate << ")" << std::endl;
+	DLOG	<< "Setting up lo_buffer with " << lo_tx_samples << " samples"
+		<< "(or=" << operating_rate << ")" << std::endl;
 	low_buff.assign(lo_tx_samples, std::complex<float>(0.0, 0.0));
 
 	md.start_of_burst = true;

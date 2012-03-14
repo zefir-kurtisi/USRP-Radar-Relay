@@ -44,7 +44,6 @@ UsrpRadarRelay::~UsrpRadarRelay()
 
 bool UsrpRadarRelay::create_pulse_pattern(struct pulse_pattern *pattern)
 {
-	uint i;
 	uint repeat_cycles = 1;
 	if (pattern->repeats == -1) {
 		/* ensure continuous patterns span at least 10ms */
@@ -61,17 +60,17 @@ bool UsrpRadarRelay::create_pulse_pattern(struct pulse_pattern *pattern)
 	pattern_buff.assign(tx_samples, std::complex<float>(0.0, 0.0));
 	int t0 = pattern->pulses[0].ts;
 	for (uint j = 0; j < repeat_cycles; j++) {
-		for (i=0; i < pattern->num_pulses; i++) {
+		for (uint i=0; i < pattern->num_pulses; i++) {
 			struct pulse *p = &pattern->pulses[i];
 			std::complex<float> hi =
 					std::complex<float>(p->ampl, p->ampl);
-			int ts = p->ts - t0 + j * pattern->repeat_interval;
-			int sample_offset = (operating_rate * ts);
-			int p_samples = round(operating_rate * p->width);
-			DLOG << "add_pulse(" << ts << ", " << p->width << "): "
-				<< p_samples << " samples at offset "
+			uint ts = p->ts - t0 + j * pattern->repeat_interval;
+			uint sample_offset = (operating_rate * ts);
+			uint p_samples = round(operating_rate * p->width);
+			DLOG	<< "add_pulse(" << ts << ", " << p->width
+				<< "): " << p_samples << " samples at offset "
 				<< sample_offset << std::endl;
-			for (int k=0; k < p_samples; k++)
+			for (uint k=0; k < p_samples; k++)
 				pattern_buff[sample_offset + k] = hi;
 		}
 	}
@@ -83,7 +82,7 @@ bool UsrpRadarRelay::create_pulse_pattern(struct pulse_pattern *pattern)
 
 bool UsrpRadarRelay::configure_tx(double freq, double rate, double gain)
 {
-	int i;
+	uint i;
 	DLOG << "Setting TX Rate to " << rate << " Msps...\t";
 	usrp->set_tx_rate(rate * 1e6);
 	operating_rate = usrp->get_tx_rate() / 1e6;

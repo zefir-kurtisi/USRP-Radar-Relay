@@ -8,7 +8,8 @@ class UsrpRadarRelay {
 public:
 	UsrpRadarRelay();
 	~UsrpRadarRelay();
-	virtual bool setup_tx(double freq=5505, double rate=10, double gain=20) = 0;
+	virtual bool
+		setup_tx(double freq=5505, double rate=10, double gain=20) = 0;
 	virtual bool set_pulse_pattern(struct pulse_pattern *p) = 0;
 	virtual bool send_sequence(void) = 0;
 
@@ -20,7 +21,7 @@ protected:
 	uhd::tx_metadata_t md;
 	std::vector<std::complex<float> > pattern_buff;
 	size_t tx_samples;
-	int num_channels;
+	size_t num_channels;
 	double operating_freq;
 	double operating_rate;
 	double operating_gain;

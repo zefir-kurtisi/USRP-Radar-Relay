@@ -28,18 +28,16 @@
 #include "RadarRpcServer.hpp"
 
 // read request on client_socket terminated by '\0'
-// request is truncated if longer than available buffer
-int RadarServer::sock_getcmd(void)
+bool RadarServer::sock_getcmd(void)
 {
 	char c;
 	transmit_buffer.clear();
-	do
-	{
-		if(read(sock_client, &c, 1) <= 0)
-			return -1;
+	do {
+		if (read(sock_client, &c, 1) <= 0)
+			return false;
 		transmit_buffer.push_back(c);
-	} while(c);
-	return transmit_buffer.length();
+	} while (c);
+	return (transmit_buffer.length() > 0);
 }
 
 // prepare listener and start listening
@@ -49,14 +47,14 @@ bool RadarServer::start_listening(void)
 	int reuse_addr = 1;
 
 	sock_listen = socket(AF_INET, SOCK_STREAM, 0);
-	if(sock_listen < 0) {
+	if (sock_listen < 0) {
 		DERR << "socket error" << std::endl;
 		return false;
 	}
 
 	// enable re-bind without time_wait problems
-	setsockopt(sock_listen, SOL_SOCKET, SO_REUSEADDR,
-			&reuse_addr, sizeof(reuse_addr));
+	setsockopt(sock_listen, SOL_SOCKET, SO_REUSEADDR, &reuse_addr,
+		   sizeof(reuse_addr));
 
 	memset((char *) &serv_addr, 0, sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
@@ -64,13 +62,13 @@ bool RadarServer::start_listening(void)
 	serv_addr.sin_port = htons(port_listen);
 	int result = bind(sock_listen, (struct sockaddr *) &serv_addr,
 			  sizeof(serv_addr));
-	if(result < 0) {
+	if (result < 0) {
 		DERR << "unable to bind to port " << port_listen << std::endl;
 		finalize_server();
 		return false;
 	}
 
-	if(listen(sock_listen, 5) < 0) {
+	if (listen(sock_listen, 5) < 0) {
 		DERR << "unable to listen" << std::endl;
 		finalize_server();
 		return false;
@@ -95,7 +93,6 @@ void RadarServer::finalize_server(void)
 	sock_listen = -1;
 }
 
-
 void RadarServer::finalize_client(void)
 {
 	shutdown(sock_client, SHUT_RDWR);
@@ -112,11 +109,11 @@ bool RadarServer::accept_client(void)
 	tv.tv_usec = 0;
 	FD_ZERO(&myset);
 	FD_SET(sock_listen, &myset);
-	if(select(sock_listen + 1, &myset, 0, 0, &tv) < 1)
-		return 0;
+	if (select(sock_listen + 1, &myset, 0, 0, &tv) < 1)
+		return false;
 
 	sock_client = accept(sock_listen, 0, 0);
-	if(sock_client < 0) {
+	if (sock_client < 0) {
 		finalize_server();
 		return false;
 	}
@@ -128,12 +125,12 @@ std::string& RadarServer::get_request(void)
 	transmit_buffer.clear();
 	if (sock_client > 0)
 		finalize_client();
-	if((sock_listen < 0) && !start_listening()){
-		DERR << "listener socket invalid, "
+	if ((sock_listen < 0) && !start_listening()) {
+		DERR	<< "listener socket invalid, "
 			<< "restarting in some seconds..." << std::endl;
 		sleep(5);
 	} else if (accept_client()) {
-		if(sock_getcmd() > 0)
+		if (sock_getcmd())
 			shutdown(sock_client, SHUT_RD);
 		else
 			finalize_client();
@@ -147,7 +144,7 @@ bool RadarServer::send_data(std::string& data)
 	int size = data.size() + 1;
 	while (sent < size) {
 		int wrote = write(sock_client, data.data() + sent, size - sent);
-		if(wrote < 0)
+		if (wrote < 0)
 			return false;
 		sent += wrote;
 	}

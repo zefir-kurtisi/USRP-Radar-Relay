@@ -30,7 +30,7 @@ void sig_int_handler(int)
 
 static void print_pattern(struct pulse_pattern *p)
 {
-	DLOG	<< "Got pattern with " << p->num_pulses << "pulses, "
+	DLOG	<< "Got pattern with " << p->num_pulses << " pulses, "
 		<< "dur=" << p->duration << ", rep=" << p->repeats << ", "
 		<< "rep_int=" << p->repeat_interval << std::endl;
 	for (uint i = 0; i < p->num_pulses; i++)
