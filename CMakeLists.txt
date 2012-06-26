@@ -67,6 +67,7 @@ set(RSERVER radar_server)
 set(RCLIENT radar_client)
 
 ADD_DEFINITIONS(-O2 -Wall -g3 -Iinclude -Llib)
+ADD_DEFINITIONS(-I${UHD_INCLUDE_DIRS})
 
 set(common_SRCS
 	Debug.cpp
